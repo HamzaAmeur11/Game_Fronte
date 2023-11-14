@@ -10,7 +10,7 @@ export default function Game() {
           <div className="flex flex-col text-slate-100 h-screen w-full">
             <div className=""><Navbar pageName="Game"/></div>
             <div className="border h-[87%] m-2 ">
-              <div>
+              <div className="w-full h-full">
 				        <RanderGame/>
               </div>
             </div>
