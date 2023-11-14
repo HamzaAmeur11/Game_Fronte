@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+#toogleCheck::after {
+    content: '';
+    @apply h-7 w-7 rounded-full absolute top-[2px] left-1 bg-red-500 opacity-100 transform transition duration-300;
+}
+#toogleCheck:checked::after {
+    @apply transform translate-x-7 transition duration-300 bg-emerald-500;
+}
+
+.AchievsStyle {
+    @apply rounded-2xl p-5 Large:p-8 bg-[#323232] mx-auto Large:h-[140px] 
+    medium:p-5 w-[90px] h-[90px] medium:w-[90px] medium:h-[90px] xMedium:w-[110px] 
+    xMedium:h-[110px] Large:w-[140px];
+}
+
+
+body {
+    --sb-track-color: #232e33;
+    --sb-thumb-color: #e58e27;
+    --sb-size: 10px;
+  
+    scrollbar-color: var(--sb-thumb-color) 
+                     var(--sb-track-color);
+  }
+  
+  body::-webkit-scrollbar {
+    width: var(--sb-size) 
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 10px;
+    
+    }
