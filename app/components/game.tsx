@@ -1,30 +1,10 @@
 "use client"
 
 import React, { useRef, useEffect } from "react";
-import { Engine, Render, World, Bodies, Composite, Runner, Body } from 'matter-js';
+import { Engine, Render, Bodies, Composite, Runner, Body } from 'matter-js';
 import Matter from "matter-js";
 
 let engine = Engine.create();
-
-type Game = {
-    engine: Engine,
-    render: Render,
-    runner: Runner,
-    bodies: Bodies,
-    composite: Composite,
-    world: World,
-}
-
-let game : Game;
-
-function gameLoop(deltaTime: number) {
-    // update the engine
-    Matter.Engine.update(engine, deltaTime);
- 
-    // request the next animation frame
-    requestAnimationFrame(gameLoop);
- }
-
 
 
 function RanderGame() {
@@ -89,27 +69,13 @@ function RanderGame() {
         
         const maxVelocity = 7;
 
-        Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground]);
-        // // run the renderer
-        Render.run(render);
-        Runner.run(Runner.create(), engine);
-
         Matter.Events.on(engine, "collisionStart", (event) =>{
             event.pairs.forEach((pair)=>{
                 const bodyA = pair.bodyA;
                 const bodyB = pair.bodyB;
-                // console.log("bodyA");
-                // console.log(bodyA);
-                // console.log("player1");
-                // console.log(player2);
                 
                 
                 if (bodyA === ball || bodyB == ball){
-                    // if (bodyA === topground || bodyB === topground 
-                    //     || bodyA === topground || bodyB === topground ){
-                        //         Body.setPosition(ball, { x: 300, y: 400 });
-                        //         Body.setVelocity(ball, { x: 5, y: -5 });
-                        // }
                         const normal = pair.collision.normal;
                         const Threshold = 0.1;
                         if (Math.abs(normal.x) < Threshold){
@@ -138,7 +104,7 @@ function RanderGame() {
             let score1 = 0
             let score2 = 0
             Matter.Events.on(engine, "beforeUpdate", () =>{
-                
+                if (ball.position.y < )
             })
             
             Matter.Events.on(engine, "beforeUpdate", () => {
@@ -155,16 +121,20 @@ function RanderGame() {
                 }
             });
             
-            
+            Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground]);
+            // // run the renderer
+            Render.run(render);
+            Runner.run(Runner.create(), engine);
+            // Body.setPosition(player2,  {x: ball.position.x, y:20})
 
             
             gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
                 let mouseX = event.clientX;
                 let mouseY = event.clientY;
-                const playerWidth = 125;
                 // calculate new position for paddleA
                 // let newPosition = { x: mouseX, y: player2.position.y };
                 if (render.options && render.options.width){
+                    const playerWidth = 125;
                     const paddleX = Math.min(Math.max(mouseX - playerWidth / 2, playerWidth / 2), render.options.width - playerWidth / 2)
                     Body.setPosition(player2,  {x: paddleX, y:player2.position.y})
                 }
@@ -173,7 +143,10 @@ function RanderGame() {
             Matter.Events.on(engine, "beforeUpdate", () => {
             Body.setPosition(player1,  {x: ball.position.x, y:player1.position.y})
         });
-        return render.canvas.remove();
+        return () =>{
+             render.canvas.remove();
+        }
+
     };
 
     

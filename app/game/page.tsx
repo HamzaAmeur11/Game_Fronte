@@ -1,6 +1,8 @@
+"use client"
+
 import Navbar from "../components/Navbar"
-import MatchHist from "../components/MatchHist"
-import RanderGame from "../components/game"
+import GameButtons from "../components/GameButtons"
+import RanderGame from "../components/game";
 
 export default function Game() {
 
@@ -11,7 +13,8 @@ export default function Game() {
             <div className=""><Navbar pageName="Game"/></div>
             <div className="border h-[87%] m-2 ">
               <div className="w-full h-full">
-				        <RanderGame/>
+				        <GameButtons/>
+                {/* <RanderGame/> */}
               </div>
             </div>
           </div>
