@@ -25,7 +25,7 @@ function RanderGame() {
             element: gameDiv.current || document.body,
             engine: engine,
             options:{
-                background: '#ffffff',
+                background: '#000000',
                 width: 600,
                 height: 800,
                 wireframes: false,
@@ -67,7 +67,9 @@ function RanderGame() {
             }
         });
         
-        const maxVelocity = 7;
+        const maxVelocity = 10;
+        let score1 = 0
+        let score2 = 0
 
         Matter.Events.on(engine, "collisionStart", (event) =>{
             event.pairs.forEach((pair)=>{
@@ -96,37 +98,23 @@ function RanderGame() {
                             if (!otherBody.isStatic) {
                                 Body.set(otherBody, { restitution, friction });
                             }
+                            if (otherBody === topground || otherBody === downground){
+                                if (otherBody === topground)score1++;
+                                else score2++;
+                                Body.setPosition(ball, { x: 300, y: 400 });
+                                Body.setVelocity(ball, { x: 5, y: -5 });
+                            }
                             
                         }
                     }
                 });
             }); 
-            let score1 = 0
-            let score2 = 0
-            Matter.Events.on(engine, "beforeUpdate", () =>{
-                if (ball.position.y < )
-            })
-            
-            Matter.Events.on(engine, "beforeUpdate", () => {
-                const maxX = 600;
-                const maxY = 800;
-                
-                // Check if the ball is outside the bounds
-                if (ball.position.x <= 10 || ball.position.x >= maxX - 10|| ball.position.y <= 10 || ball.position.y >=  maxY - 10) {
-                    // Reset the ball to the center
-                    Body.setPosition(ball, { x: 300, y: 400 });
-                    Body.setVelocity(ball, { x: 5, y: -5 });
-                    
-                    // Reset the ball's velocity if needed
-                }
-            });
+
             
             Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground]);
             // // run the renderer
             Render.run(render);
             Runner.run(Runner.create(), engine);
-            // Body.setPosition(player2,  {x: ball.position.x, y:20})
-
             
             gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
                 let mouseX = event.clientX;
@@ -138,10 +126,12 @@ function RanderGame() {
                     const paddleX = Math.min(Math.max(mouseX - playerWidth / 2, playerWidth / 2), render.options.width - playerWidth / 2)
                     Body.setPosition(player2,  {x: paddleX, y:player2.position.y})
                 }
+                console.log(`score 1 : ${score1} && score2 : ${score2}`);
+                
             });
-            console.log("hello");
             Matter.Events.on(engine, "beforeUpdate", () => {
             Body.setPosition(player1,  {x: ball.position.x, y:player1.position.y})
+          
         });
         return () =>{
              render.canvas.remove();
