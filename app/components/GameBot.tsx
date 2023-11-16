@@ -1,14 +1,22 @@
 "use client"
 
 import React, { useRef, useEffect } from "react";
-import { Engine, Render, Bodies, Composite, Runner, Body } from 'matter-js';
+import { Engine, Render, Bodies, Composite, Runner, Body, Mouse, MouseConstraint } from 'matter-js';
 import Matter from "matter-js";
 
 let engine = Engine.create();
+let width = 600;
+let height = 800;
+let paddleWidth = 125;
+let paddleHeight = 20;
 
 
-function RanderGame() {
-    const gameDiv = useRef<HTMLDivElement>(null);
+function hello(){
+    
+}
+
+function GameBot(){
+    const gameDiv = useRef<HTMLDivElement>();
 
     const initializeObjects = () => {
         
@@ -26,8 +34,8 @@ function RanderGame() {
             engine: engine,
             options:{
                 background: '#000000',
-                width: 600,
-                height: 800,
+                width: width,
+                height: height,
                 wireframes: false,
             }
         });;
@@ -37,7 +45,7 @@ function RanderGame() {
         var leftground =  Bodies.rectangle(0, 0, 10, 1600, { isStatic: true });
         var rightground =  Bodies.rectangle(600, 0, 10, 1600, { isStatic: true });
         
-        var ball = Bodies.circle(300, 400, 10, { 
+        var ball = Bodies.circle(width / 2, height / 2, 10, { 
             restitution: 1,
             frictionAir: 0,
             friction:0,
@@ -51,7 +59,7 @@ function RanderGame() {
             y: 5,
         })
         
-        var player1 = Bodies.rectangle(300, 20, 125, 20, {
+        var player1 = Bodies.rectangle(width / 2, 20, paddleWidth, paddleHeight, {
             isStatic: true,
             chamfer: { radius: 10},
             render:{
@@ -59,7 +67,7 @@ function RanderGame() {
             },
         });
         
-        var player2 = Bodies.rectangle(300, 780, 125, 20, { 
+        var player2 = Bodies.rectangle(width / 2, 780, paddleWidth, paddleHeight, { 
             isStatic: true,
             chamfer: { radius: 10},
             render:{
@@ -110,27 +118,40 @@ function RanderGame() {
                 });
             }); 
 
+        let mouse = Mouse.create(gameDiv.current);
+        Mouse.setElement(mouse, gameDiv.current);
+        
+        // Create the MouseConstraint
+        let mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: {
+                   visible: false
+                }
+            }
+        });
             
-            Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground]);
+            Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground, mouseConstraint]);
             // // run the renderer
             Render.run(render);
             Runner.run(Runner.create(), engine);
             
             gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
-                let mouseX = event.clientX;
-                let mouseY = event.clientY;
+                let mouseX = event.clientX - gameDiv.current!.offsetLeft;
+                let mouseY = event.clientY - gameDiv.current!.offsetTop;
                 // calculate new position for paddleA
                 // let newPosition = { x: mouseX, y: player2.position.y };
                 if (render.options && render.options.width){
-                    const playerWidth = 125;
-                    const paddleX = Math.min(Math.max(mouseX - playerWidth / 2, playerWidth / 2), render.options.width - playerWidth / 2)
-                    Body.setPosition(player2,  {x: paddleX, y:player2.position.y})
+                    const paddleX = Math.min(Math.max(mouseX - paddleWidth / 2, paddleWidth / 2), render.options.width - paddleWidth / 2)
+                    console.log(`x : ${paddleX} && mouseX: ${mouseX} && y : ${player2.position.y}`);
+                    Body.setPosition(player2, {x: paddleX, y:player2.position.y})
                 }
-                console.log(`score 1 : ${score1} && score2 : ${score2}`);
                 
             });
             Matter.Events.on(engine, "beforeUpdate", () => {
             Body.setPosition(player1,  {x: ball.position.x, y:player1.position.y})
+            // Body.setPosition(player2,  {x: ball.position.x, y:player2.position.y})
           
         });
         return () =>{
@@ -150,4 +171,4 @@ function RanderGame() {
     );
 }
 
-export default RanderGame;
+export default GameBot;

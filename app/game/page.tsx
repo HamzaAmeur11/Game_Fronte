@@ -2,7 +2,7 @@
 
 import Navbar from "../components/Navbar"
 import GameButtons from "../components/GameButtons"
-import RanderGame from "../components/game";
+import RanderGame from "../components/GameBot";
 
 export default function Game() {
 

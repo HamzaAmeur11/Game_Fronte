@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import RanderGame from "./game";
+import React, { useContext, useState } from 'react';
+import GameBot from "./GameBot";
 import "./GameButtons.css";
+import { WebsocketContext } from '../Contexts/WebSocketContext';
 
 const GameButtons = () => {
+
+    const socket = useContext(WebsocketContext);
+
 
     const [showBotGame, setShowBotGame] = useState(false)
     const [showRandomGame, setShowRandomGame] = useState(false)
     const [showfriendGame, setShowFriendGame] = useState(false)
+    
     const handlePlayWithBot = () => {
         // Handle logic for playing with a bot
         console.log('Playing with Bot');
@@ -14,13 +19,14 @@ const GameButtons = () => {
     };
 
     const handlePlayWithRandomUser = () => {
-    // Handle logic for playing with a random user
-    console.log('Playing with Random User');
+        console.log('Playing with Random User');
+       
+    
     };
 
     const handlePlayWithFriend = () => {
-    // Handle logic for playing with a friend
-    console.log('Playing with Friend');
+        console.log('Playing with Friend');
+
     };
 
     return (
@@ -32,7 +38,7 @@ const GameButtons = () => {
                 <button className='play-button' onClick={handlePlayWithFriend}>Play with Friend</button>
             </>
        )}
-        {showBotGame && <RanderGame/>}
+        {showBotGame && <GameBot/>}
     </div>
   );
 };
