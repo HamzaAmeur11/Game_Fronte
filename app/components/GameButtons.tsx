@@ -1,7 +1,11 @@
 import React, { useContext, useState } from 'react';
 import GameBot from "./GameBot";
 import "./GameButtons.css";
+import RealTimeGame from "./RealTimeGame"
 import { WebsocketContext } from '../Contexts/WebSocketContext';
+import { Socket } from 'socket.io-client';
+
+
 
 const GameButtons = () => {
 
@@ -20,7 +24,7 @@ const GameButtons = () => {
 
     const handlePlayWithRandomUser = () => {
         console.log('Playing with Random User');
-       
+        setShowRandomGame(true);
     
     };
 
@@ -39,6 +43,7 @@ const GameButtons = () => {
             </>
        )}
         {showBotGame && <GameBot/>}
+        {showBotGame && <RealTimeGame socket={socket} />}
     </div>
   );
 };

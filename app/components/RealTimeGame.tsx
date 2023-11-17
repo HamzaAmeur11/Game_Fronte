@@ -1,50 +1,33 @@
-import React, { useContext , useRef, useEffect , useState} from "react";
-import { WebsocketContext } from "../Contexts/WebSocketContext"
+import { useRef } from "react";
+import { Socket } from "socket.io-client";
+import Matter, { 
+    Engine, 
+    Render, 
+    Bodies, 
+    Composite, 
+    Runner, 
+    Body
+} from 'matter-js';
 
 
 
+type RealTimeGameProps = {
+    socket: Socket;
+};
 
-type MessagePayload = {
-    content: string;
-    msg: string;
-}
+let engine = Engine.create();
+let width = 600;
+let height = 800;
+let paddleWidth = 125;
+let paddleHeight = 20;
 
-export const Websocket = () =>{
+const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket }) => {
+    // You can now use the socket object here
 
-    const [value, setValue] = useState('');
-    const [messages, setMessages] = useState<MessagePayload[]>([]);
-    const socket = useContext(WebsocketContext);
+    const gameDiv = useRef<HTMLDivElement>();
+    
+    return <></>
+   
+};
 
-    useEffect(() => {
-        socket.on('connect', ()=>{
-            console.log('connected?');
-        })
-        socket.on('onMessage', (newMessage: MessagePayload) =>{
-            console.log('onMessage event received');
-            console.log(newMessage);
-            setMessages((prev) => [...prev, newMessage])
-        })
-        return ()=>{
-            console.log("unregistering Event");
-            socket.off('connect')
-            socket.off('onMessage')
-        }
-    }, []);
-
-    const onSubmit= () => {
-        socket.emit('newMsg', value);
-        setValue('');
-    }
-
-
-    return <div>
-        <div>
-            <h1>WebSocket component</h1>
-            <div>{messages.length === 0 ?<div>No messages</div> : <div>
-            {messages.map((msg) => <div><p>{msg.content}</p></div>)}
-            </div> }</div>
-            <input type="text" value={value} onChange={(e) => setValue(e.target.value)}/>
-            <button onClick={onSubmit}>Submit</button>
-        </div>
-    </div>
-}
+export default RealTimeGame;

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useRef, useEffect } from "react";
-import { Engine, Render, Bodies, Composite, Runner, Body, Mouse, MouseConstraint } from 'matter-js';
+import { Engine, Render, Bodies, Composite, Runner, Body} from 'matter-js';
 import Matter from "matter-js";
 
 let engine = Engine.create();
@@ -117,22 +117,8 @@ function GameBot(){
                     }
                 });
             }); 
-
-        let mouse = Mouse.create(gameDiv.current);
-        Mouse.setElement(mouse, gameDiv.current);
-        
-        // Create the MouseConstraint
-        let mouseConstraint = MouseConstraint.create(engine, {
-            mouse: mouse,
-            constraint: {
-                stiffness: 0.2,
-                render: {
-                   visible: false
-                }
-            }
-        });
             
-            Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground, mouseConstraint]);
+            Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground]);
             // // run the renderer
             Render.run(render);
             Runner.run(Runner.create(), engine);
@@ -150,10 +136,8 @@ function GameBot(){
                 
             });
             Matter.Events.on(engine, "beforeUpdate", () => {
-            Body.setPosition(player1,  {x: ball.position.x, y:player1.position.y})
-            // Body.setPosition(player2,  {x: ball.position.x, y:player2.position.y})
-          
-        });
+                Body.setPosition(player1,  {x: ball.position.x, y:player1.position.y})
+            });
         return () =>{
              render.canvas.remove();
         }
