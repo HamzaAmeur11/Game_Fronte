@@ -1,18 +1,17 @@
 import { useRef } from "react";
 import { Socket } from "socket.io-client";
-import Matter, { 
-    Engine, 
-    Render, 
-    Bodies, 
-    Composite, 
-    Runner, 
-    Body
-} from 'matter-js';
+import Matter, {
+  Engine,
+  Render,
+  Bodies,
+  Composite,
+  Runner,
+  Body,
+} from "matter-js";
 
-
-
-type RealTimeGameProps = {
-    socket: Socket;
+interface RealTimeGameProps  {
+  socket: Socket;
+  clientId: string;
 };
 
 let engine = Engine.create();
@@ -21,13 +20,12 @@ let height = 800;
 let paddleWidth = 125;
 let paddleHeight = 20;
 
-const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket }) => {
-    // You can now use the socket object here
+const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId }) => {
+  // You can now use the socket object here
 
-    const gameDiv = useRef<HTMLDivElement>();
-    
-    return <></>
-   
+  const gameDiv = useRef<HTMLDivElement>();
+
+  return <></>;
 };
 
 export default RealTimeGame;

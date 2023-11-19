@@ -151,7 +151,7 @@ function GameBot(){
     }, []);
 
     return (
-            <div className="hh" ref={gameDiv}></div>
+            <div ref={gameDiv}></div>
     );
 }
 
