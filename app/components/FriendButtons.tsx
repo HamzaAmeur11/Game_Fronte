@@ -7,6 +7,8 @@ interface FriendButtonsProps  {
 
 const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
     const CreateNewGame = () =>{
+        console.log(`Client id : |${clientId}|`);
+        
         socket.emit("message", {
             "method":"create",
             "clientId": clientId,

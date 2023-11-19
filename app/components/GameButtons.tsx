@@ -13,8 +13,8 @@ import FriendButtons from './FriendButtons';
 const GameButtons = () => {
     
     const socket = useContext(WebsocketContext);
-    let clientId: string = '';
-    let gameId: string;
+    const [clientId, setClientId] = useState<string>('');
+    const [gameId, setGameId] = useState<string>('');
 
 
     const [showBotGame, setShowBotGame] = useState(false)
@@ -22,12 +22,23 @@ const GameButtons = () => {
     const [showfriendGame, setShowFriendGame] = useState(false)
     const [showInputAndButtons, setShowInputAndButtons] = useState(false);
 
-    socket.on("connection", res=>{
-        if (res.method === "connect"){
-            clientId = res.clientId;
-            console.log(`Client : ${clientId} Connected`);
-        }
-    })
+    // const clientIdPromis = new Promise((resolve, reject) => {
+        socket.on("connection", res=>{
+            if (res.method === "connect"){
+                setClientId(res.clientId);
+                // resolve(res.clientId);
+                console.log(`Client : ${res.clientId} Connected`);
+            }
+        })
+    // });
+ 
+    // clientIdPromis.then((id) =>{
+    //     if (typeof id === 'string') 
+    //     setClientId(id);
+    //     console.log(`Client : ${id} Connected`);
+    // })
+ 
+    console.log(`Client : ${clientId} Connected`);
 
     socket.on("message", res =>{
 
@@ -53,7 +64,10 @@ const GameButtons = () => {
     const handlePlayWithFriend = () => {
         console.log('Playing with Friend');
         setShowFriendGame(true);
-        setShowInputAndButtons(true);
+        if (!showInputAndButtons)
+            setShowInputAndButtons(true);
+        else
+            setShowInputAndButtons(false);
     };
 
     return (
