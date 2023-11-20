@@ -15,11 +15,13 @@ const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
         })
     }
     const JoinToGame = () =>{
-        const GameId = document.getElementsByClassName("GameId");
+        const GameId = document.getElementsByClassName("GameId")[0];
+        console.log(`GameId : ${GameId.value}`);
+        
         socket.emit("message", {
             "method": "join",
             "clientId": clientId,
-            "gameId": GameId,
+            "gameId": GameId.value,
         })
     }
 

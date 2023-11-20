@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Socket } from "socket.io-client";
 import Matter, {
   Engine,
@@ -25,7 +25,11 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId }) => {
 
   const gameDiv = useRef<HTMLDivElement>();
 
-  return <></>;
+  useEffect(() => {
+    
+  }, [])
+
+  return <div ref={gameDiv}></div>;
 };
 
 export default RealTimeGame;

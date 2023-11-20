@@ -41,7 +41,12 @@ const GameButtons = () => {
     console.log(`Client : ${clientId} Connected`);
 
     socket.on("message", res =>{
-
+        console.log("------ res -----");
+        console.log(res);
+        console.log("------ end res -----");
+        if (res.method === 'play'){
+            setShowRandomGame(true);
+        }
     })
 
     const handlePlayWithBot = () => {
@@ -73,7 +78,7 @@ const GameButtons = () => {
     return (
     <div className='button-container'>
         {/* <FriendButtons socket={socket} clientId={clientId}/> */}
-        {!showBotGame && ( 
+        {!showBotGame && !showRandomGame && ( 
             <>
                 <button className='play-button' onClick={handlePlayWithBot}>Play with Bo9a</button>
                 <button className='play-button' onClick={handlePlayWithRandomUser}>Play with Random</button>
@@ -81,8 +86,8 @@ const GameButtons = () => {
             </>
        )}
         {showBotGame && <GameBot/>}
-        {showBotGame && <RealTimeGame socket={socket} clientId={clientId}/>}
-        {showInputAndButtons && <FriendButtons socket={socket} clientId={clientId}/>}
+        {showRandomGame && <RealTimeGame socket={socket} clientId={clientId}/>}
+        {!showRandomGame && showInputAndButtons && <FriendButtons socket={socket} clientId={clientId}/>}
     </div>
   );
 };
