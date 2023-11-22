@@ -5,6 +5,7 @@ import RealTimeGame from "./RealTimeGame"
 import { WebsocketContext } from '../Contexts/WebSocketContext';
 import { Socket } from 'socket.io-client';
 import FriendButtons from './FriendButtons';
+import { GameDependency, GameDto } from '../game/game.dto';
 
 
 
@@ -15,7 +16,8 @@ const GameButtons = () => {
     const socket = useContext(WebsocketContext);
     const [clientId, setClientId] = useState<string>('');
     const [gameId, setGameId] = useState<string>('');
-
+    const [gameDependency, setGameDependency] = useState<GameDependency>();
+    const [gameProperties, setGameProperties] = useState<GameDto>();
 
     const [showBotGame, setShowBotGame] = useState(false)
     const [showRandomGame, setShowRandomGame] = useState(false)
@@ -23,34 +25,33 @@ const GameButtons = () => {
     const [showInputAndButtons, setShowInputAndButtons] = useState(false);
 
     // const clientIdPromis = new Promise((resolve, reject) => {
-        socket.on("connection", res=>{
-            if (res.method === "connect"){
-                setClientId(res.clientId);
-                // resolve(res.clientId);
-                console.log(`Client : ${res.clientId} Connected`);
-            }
-        })
-    // });
- 
-    // clientIdPromis.then((id) =>{
-    //     if (typeof id === 'string') 
-    //     setClientId(id);
-    //     console.log(`Client : ${id} Connected`);
-    // })
+    socket.on("connection", res=>{
+        if (res.method === "connect"){
+            setClientId(res.clientId);
+            // resolve(res.clientId);
+            console.log(`Client : ${res.clientId} Connected`);
+        }
+    })
  
     console.log(`Client : ${clientId} Connected`);
 
     socket.on("message", res =>{
         console.log("------ res -----");
-        console.log(res);
-        console.log("------ end res -----");
+        // console.log(res);
         if (res.method === 'play'){
+            setGameDependency(res.gameDependency);
+            setGameProperties(res.gameProperties)
+
+            console.log(res.gameDependency);
+            console.log(gameDependency);
+            console.log(res.gameProperties);
+            console.log(gameProperties);
             setShowRandomGame(true);
         }
+        console.log("------ end res -----");
     })
 
     const handlePlayWithBot = () => {
-        // Handle logic for playing with a bot
         console.log('Playing with Bot');
         setShowBotGame(true)
     };
@@ -61,7 +62,6 @@ const GameButtons = () => {
             "method": "random",
             "clientId": clientId 
         })
-        /** Wait Until game Created **/
         setShowRandomGame(true);
     
     };
@@ -77,7 +77,6 @@ const GameButtons = () => {
 
     return (
     <div className='button-container'>
-        {/* <FriendButtons socket={socket} clientId={clientId}/> */}
         {!showBotGame && !showRandomGame && ( 
             <>
                 <button className='play-button' onClick={handlePlayWithBot}>Play with Bo9a</button>
@@ -86,7 +85,7 @@ const GameButtons = () => {
             </>
        )}
         {showBotGame && <GameBot/>}
-        {showRandomGame && <RealTimeGame socket={socket} clientId={clientId}/>}
+        {showRandomGame && gameDependency && gameProperties && <RealTimeGame socket={socket} clientId={clientId} gameDependency={gameDependency} gameProperties={gameProperties}/>}
         {!showRandomGame && showInputAndButtons && <FriendButtons socket={socket} clientId={clientId}/>}
     </div>
   );
