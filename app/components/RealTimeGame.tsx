@@ -33,7 +33,10 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameDep
   console.log(`gameDDep :`);
   console.log(gameDependency);
   
-  
+  socket.on("update", res => {
+    console.log(res);
+    
+  })
   useEffect(() => {
     engine = Engine.create({
       gravity: {

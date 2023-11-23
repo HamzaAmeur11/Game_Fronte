@@ -26,14 +26,17 @@ const GameButtons = () => {
 
     // const clientIdPromis = new Promise((resolve, reject) => {
     socket.on("connection", res=>{
-        if (res.method === "connect"){
-            setClientId(res.clientId);
+        // if (res.method === "connect"){
             // resolve(res.clientId);
             console.log(`Client : ${res.clientId} Connected`);
-        }
+            console.log("response: ");
+            console.log(res);
+            setClientId(res.clientId);
+            
+        // }
     })
  
-    console.log(`Client : ${clientId} Connected`);
+    console.log(`Client : ${socket.id} Connected`);
 
     socket.on("message", res =>{
         console.log("------ res -----");
@@ -60,7 +63,7 @@ const GameButtons = () => {
         console.log('Playing with Random User');
         socket.emit("message", {
             "method": "random",
-            "clientId": clientId 
+            "clientId": socket.id, 
         })
         setShowRandomGame(true);
     
@@ -86,7 +89,7 @@ const GameButtons = () => {
        )}
         {showBotGame && <GameBot/>}
         {showRandomGame && gameDependency && gameProperties && <RealTimeGame socket={socket} clientId={clientId} gameDependency={gameDependency} gameProperties={gameProperties}/>}
-        {!showRandomGame && showInputAndButtons && <FriendButtons socket={socket} clientId={clientId}/>}
+        {!showRandomGame && showInputAndButtons && <FriendButtons socket={socket} clientId={socket.id}/>}
     </div>
   );
 };
