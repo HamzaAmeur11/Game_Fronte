@@ -41,9 +41,10 @@ const GameButtons = () => {
         setGameId(res.gameId);
     })
     // socket.on("JOIN", res => {
-
-    // })
-    socket.on("PLAY", res => {
+        
+        // })
+        socket.on("PLAY", res => {
+        setGameId(res.gameId);
         setGameDependency(res.gameDependency)
         setShowRandomGame(true);
     })
@@ -78,8 +79,8 @@ const GameButtons = () => {
             </>
        )}
         {showBotGame && <GameBot/>}
-        {showRandomGame && gameDependency && <RealTimeGame socket={socket} clientId={clientId} gameDependency={gameDependency}/>}
-        {!showRandomGame && showInputAndButtons && <FriendButtons socket={socket} clientId={socket.id}/>}
+        {(showRandomGame && gameDependency) && <RealTimeGame socket={socket} clientId={clientId} gameId={gameId} gameDependency={gameDependency}/>}
+        {(!showRandomGame && showInputAndButtons) && <FriendButtons socket={socket} clientId={socket.id}/>}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import Matter, {
   Engine,
@@ -12,15 +12,16 @@ import Matter, {
   Vector,
   World,
 } from "matter-js";
-import { GameDependency, GameDto } from "../game/game.dto";
+import { GameDependency } from "../game/game.dto";
 
 interface RealTimeGameProps  {
   socket: Socket;
   clientId: string;
+  gameId: string;
   gameDependency: GameDependency;
 };
 
-let engine ;
+let engine: Matter.Engine ;
 let width : number = 600;
 let height : number = 800;
 let paddleWidth : number = 125;
@@ -36,125 +37,108 @@ let player1: Body;
 let player2: Body;
 
 
-const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameDependency}) => {
+const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId , gameDependency}) => {
   // You can now use the socket object here
 
-  const gameDiv = useRef<HTMLDivElement>();
-  console.log(`i'm a realTime component: clientid : ${clientId}`);
-  console.log(`gameDDep :`);
-  console.log(gameDependency);
+	const gameDiv = useRef<HTMLDivElement>();
+	const [objectsInitialized, setObjectsInitialized] = useState(false);
+	console.log(`i'm a realTime component: clientid : ${clientId}`);
+	console.log(`gameDDep : ${gameId}`);
 
-  socket.on("START", res => {
-    console.log("START");
-    console.log(res);
-    
-	  ball = res.ball;
-	  Pv1 = res.p1;
-	  Pv2 = res.p2;
-	  score1 = res.score1;
-	  score2 = res.score2
-  });
+	engine = Engine.create({
+        gravity: {
+          x: gameDependency.engineOption.gravityX,
+          y: gameDependency.engineOption.gravityY,
+          scale: gameDependency.engineOption.gravityScale,
+        },
+        positionIterations : gameDependency.engineOption.positionIterations,
+        velocityIterations : gameDependency.engineOption.velocityIterations,
+      })
   
-  socket.on("UPDATE", res=>{
-    console.log("UPDATE");
-    
-    console.log(res);
-    // if (ballBody)
-    // Body.setPosition(ballBody, res.ball);
-    // if (player1)
-    // Body.setPosition(player1, res.p1);
-    // if (player2)
-    // Body.setPosition(player2, res.p2);
-	  ball = res.ball;
-	  Pv1 = res.p1;
-	  Pv2 = res.p2;
-	  score1 = res.score1;
-	  score2 = res.score2
-  });
-
-  socket.on("WinOrLose", res=>{
-	if (res.content === "win")
-		console.log("YOU WIN");
-	else
-		console.log("YOU LOSE");
-		
-  })
-  
-  useEffect(() => {
-    engine = Engine.create({
-      gravity: {
-        x: gameDependency.engineOption.gravityX,
-        y: gameDependency.engineOption.gravityY,
-        scale: gameDependency.engineOption.gravityScale,
-      },
-      positionIterations : gameDependency.engineOption.positionIterations,
-      velocityIterations : gameDependency.engineOption.velocityIterations,
-    })
-
     let render = Render.create({
-      element: gameDiv.current || document.body,
-      engine: engine,
-      options:{
-        background: gameDependency.renderOptions.background,
-        width: width,
-        height: height, wireframes: gameDependency.renderOptions.wireframe,
-      }
+        element: gameDiv.current || document.body,
+        engine: engine,
+        options:{
+          background: gameDependency.renderOptions.background,
+          width: width,
+          height: height, wireframes: gameDependency.renderOptions.wireframe,
+        }
     })
     let topground =  Bodies.rectangle(0, 0, 1200, 10, { isStatic: true });
     let downground =  Bodies.rectangle(0, 800, 1200, 10, { isStatic: true });
     let leftground =  Bodies.rectangle(0, 0, 10, 1600, { isStatic: true });
     let rightground =  Bodies.rectangle(600, 0, 10, 1600, { isStatic: true });
-    if (ball){
-      ballBody = Bodies.circle(
-        ball.x,
-        ball.y,
-        10, {
-            restitution: gameDependency.ballOptions.restitution,
-            frictionAir: gameDependency.ballOptions.frictionAir,
-            friction: gameDependency.ballOptions.friction,
-            inertia: gameDependency.ballOptions.inertia,
-            render:{
-              fillStyle: gameDependency.ballOptions.color,
-            }
-        })
-      Body.setVelocity(ballBody, {
-        x: gameDependency.ballOptions.velocityX,
-        y: gameDependency.ballOptions.velocityY}
-      )}
-    if (Pv1)
-      player1 = Bodies.rectangle(
-        Pv1.x,
-        Pv1.y,
-        paddleWidth,
-        paddleHeight,
-        {
-          isStatic: true,
-          chamfer: {radius: gameDependency.playersOption.chamferReduis},
-          render:{fillStyle: gameDependency.playersOption.color}
-        }
-      )
-    if (Pv2)
-      player2 = Bodies.rectangle(
-        Pv2.x,
-        Pv2.y,
-        paddleWidth,
-        paddleHeight,
-        {
-          isStatic: true,
-          chamfer: {radius: gameDependency.playersOption.chamferReduis},
-          render:{fillStyle: gameDependency.playersOption.color}
-        }
-      )
-    if (ballBody && player1 && player2)
-      World.add(engine.world, [ballBody, player1, player2, topground, downground, leftground, rightground]);
-            // // run the renderer
-    Render.run(render);
-    Runner.run(Runner.create(), engine);
-    return () =>{
-      render.canvas.remove();
-    }
+	
+	socket.on("START", res => {
+		console.log("START");
+		console.log(res);
+		
+		ball = res.ball;
+		Pv1 = res.p1;
+		Pv2 = res.p2;
+		score1 = res.score1;
+		score2 = res.score2
 
-  }, [])
+		ballBody = Bodies.circle(ball.x, ball.y, 10 );
+		player1 = Bodies.rectangle( Pv1.x , Pv1.y , paddleWidth , paddleHeight,{
+			isStatic: true,
+			chamfer: {radius: gameDependency.playersOption.chamferReduis},
+        })
+		player2 = Bodies.rectangle( Pv2.x , Pv2.y , paddleWidth , paddleHeight,{
+			isStatic: true,
+			chamfer: {radius: gameDependency.playersOption.chamferReduis},
+        })
+		setObjectsInitialized(true);
+  });
+  
+	socket.on("UPDATE", res=>{
+
+		console.log("UPDATE", res.ball, ballBody);
+		Body.setPosition(ballBody,res.ball)
+		console.log("position: ", ballBody.position);
+		Body.setPosition(ballBody,res.ball)
+		Body.setPosition(player1,res.p1)
+		Body.setPosition(player2,res.p2)
+		Pv1 = res.p1;
+		Pv2 = res.p2;
+		score1 = res.score1;
+		score2 = res.score2
+		Engine.update(engine);
+	});
+
+	socket.on("WinOrLose", res=>{
+		if (res.content === "win")
+		console.log("YOU WIN");
+		else
+			console.log("YOU LOSE");	
+	})
+	if (gameDiv.current)
+		gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
+			let mouseX = event.clientX - gameDiv.current!.offsetLeft;
+			if (render.options && render.options.width){
+				const paddleX = Math.min(Math.max(mouseX - paddleWidth / 2, paddleWidth / 2), render.options.width - paddleWidth / 2)
+				// console.log(`x : ${paddleX} && mouseX: ${mouseX} && y : ${player2.position.y}`);
+				socket.emit("UPDATE", {
+					clientId: clientId,
+					gameId: gameId,
+					vec: { x: paddleX, y: player2.position.y },
+				})
+				Body.setPosition(player2, {x: paddleX, y:player2.position.y})
+			}
+		})
+
+	useEffect(() => {
+		if (objectsInitialized){
+			console.log("hello");
+			
+			World.add(engine.world, [ballBody, player1, player2, topground, downground, leftground, rightground]);
+			Runner.run(Runner.create(), engine);
+			Render.run(render);
+		}
+		return () =>{
+			render.canvas.remove();
+		}
+	}, [objectsInitialized])
 
   return <div ref={gameDiv}></div>;
 };
