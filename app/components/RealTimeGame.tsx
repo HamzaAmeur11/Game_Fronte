@@ -43,7 +43,6 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 	const gameDiv = useRef<HTMLDivElement>();
 	const [objectsInitialized, setObjectsInitialized] = useState(false);
 	console.log(`i'm a realTime component: clientid : ${clientId}`);
-	console.log(`gameDDep : ${gameId}`);
 
 	engine = Engine.create({
         gravity: {
@@ -115,7 +114,7 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 	if (gameDiv.current)
 		gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
 			let mouseX = event.clientX - gameDiv.current!.offsetLeft;
-			if (render.options && render.options.width){
+			if (clientId && render.options && render.options.width){
 				const paddleX = Math.min(Math.max(mouseX - paddleWidth / 2, paddleWidth / 2), render.options.width - paddleWidth / 2)
 				// console.log(`x : ${paddleX} && mouseX: ${mouseX} && y : ${player2.position.y}`);
 				socket.emit("UPDATE", {
@@ -123,7 +122,7 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 					gameId: gameId,
 					vec: { x: paddleX, y: player2.position.y },
 				})
-				Body.setPosition(player2, {x: paddleX, y:player2.position.y})
+				// Body.setPosition(player2, {x: paddleX, y:player2.position.y})
 			}
 		})
 
