@@ -17,7 +17,6 @@ const GameButtons = () => {
     const [clientId, setClientId] = useState<string>('');
     const [gameId, setGameId] = useState<string>('');
     const [gameDependency, setGameDependency] = useState<GameDependency>();
-    const [gameProperties, setGameProperties] = useState<GameDto>();
 
     const [showBotGame, setShowBotGame] = useState(false)
     const [showRandomGame, setShowRandomGame] = useState(false)
@@ -38,20 +37,15 @@ const GameButtons = () => {
  
     console.log(`Client : ${socket.id} Connected`);
 
-    socket.on("message", res =>{
-        console.log("------ res -----");
-        // console.log(res);
-        if (res.method === 'play'){
-            setGameDependency(res.gameDependency);
-            setGameProperties(res.gameProperties)
+    socket.on("CREATE", res => {
+        setGameId(res.gameId);
+    })
+    // socket.on("JOIN", res => {
 
-            console.log(res.gameDependency);
-            console.log(gameDependency);
-            console.log(res.gameProperties);
-            console.log(gameProperties);
-            setShowRandomGame(true);
-        }
-        console.log("------ end res -----");
+    // })
+    socket.on("PLAY", res => {
+        setGameDependency(res.gameDependency)
+        setShowRandomGame(true);
     })
 
     const handlePlayWithBot = () => {
@@ -61,11 +55,7 @@ const GameButtons = () => {
 
     const handlePlayWithRandomUser = () => {
         console.log('Playing with Random User');
-        socket.emit("message", {
-            "method": "random",
-            "clientId": socket.id, 
-        })
-        setShowRandomGame(true);
+        socket.emit("RANDOM", { clientId : socket.id, })
     
     };
 
@@ -88,7 +78,7 @@ const GameButtons = () => {
             </>
        )}
         {showBotGame && <GameBot/>}
-        {showRandomGame && gameDependency && gameProperties && <RealTimeGame socket={socket} clientId={clientId} gameDependency={gameDependency} gameProperties={gameProperties}/>}
+        {showRandomGame && gameDependency && <RealTimeGame socket={socket} clientId={clientId} gameDependency={gameDependency}/>}
         {!showRandomGame && showInputAndButtons && <FriendButtons socket={socket} clientId={socket.id}/>}
     </div>
   );
