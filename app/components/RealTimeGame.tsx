@@ -36,6 +36,7 @@ let ballBody: Body;
 let player1: Body;
 let player2: Body;
 
+let ID: number;
 
 const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId , gameDependency}) => {
   // You can now use the socket object here
@@ -71,12 +72,15 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 	socket.on("START", res => {
 		console.log("START");
 		console.log(res);
-		
+		ID = res.ID;
 		ball = res.ball;
 		Pv1 = res.p1;
 		Pv2 = res.p2;
 		score1 = res.score1;
 		score2 = res.score2
+		console.log("START ID: " , ID);
+		console.log("p1 : ", res.p1);
+		console.log("p2 : ", res.p2);
 
 		ballBody = Bodies.circle(ball.x, ball.y, 10 );
 		player1 = Bodies.rectangle( Pv1.x , Pv1.y , paddleWidth , paddleHeight,{
@@ -91,38 +95,46 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
   });
   
 	socket.on("UPDATE", res=>{
-
-		console.log("UPDATE", res.ball, ballBody);
+		console.log("UPDATE ID: " , ID);
+		console.log("p1 : ", res.p1);
+		console.log("p2 : ", res.p2);
+		
 		Body.setPosition(ballBody,res.ball)
-		console.log("position: ", ballBody.position);
 		Body.setPosition(ballBody,res.ball)
 		Body.setPosition(player1,res.p1)
 		Body.setPosition(player2,res.p2)
-		Pv1 = res.p1;
-		Pv2 = res.p2;
-		score1 = res.score1;
-		score2 = res.score2
 		Engine.update(engine);
 	});
 
 	socket.on("WinOrLose", res=>{
 		if (res.content === "win")
-		console.log("YOU WIN");
+			console.log("YOU WIN");
 		else
-			console.log("YOU LOSE");	
+			console.log("YOU LOSE");
+		Render.stop(render);	
 	})
+	
+	socket.on("GAMEOVER", res=>{
+		
+		Render.stop(render);	
+		console.log("GAMEOVER");
+	})
+
+
+
 	if (gameDiv.current)
 		gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
 			let mouseX = event.clientX - gameDiv.current!.offsetLeft;
+			console.log(`CLIENTID: ${clientId}`);
+			let vecY = ID === 1 ? 780: 20;
 			if (clientId && render.options && render.options.width){
 				const paddleX = Math.min(Math.max(mouseX - paddleWidth / 2, paddleWidth / 2), render.options.width - paddleWidth / 2)
-				// console.log(`x : ${paddleX} && mouseX: ${mouseX} && y : ${player2.position.y}`);
+				console.log(`UPDATE`);
 				socket.emit("UPDATE", {
 					clientId: clientId,
 					gameId: gameId,
-					vec: { x: paddleX, y: player2.position.y },
+					vec: { x: ID ===1 ? paddleX: width - paddleX, y: vecY },
 				})
-				// Body.setPosition(player2, {x: paddleX, y:player2.position.y})
 			}
 		})
 

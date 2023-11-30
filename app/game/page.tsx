@@ -5,8 +5,6 @@ import GameButtons from "../components/GameButtons"
 import RanderGame from "../components/GameBot";
 
 export default function Game() {
-
-  console.log('test parent');
   
   return (
           <div className="flex flex-col text-slate-100 h-screen w-full">
