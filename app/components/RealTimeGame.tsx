@@ -123,10 +123,10 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 
 
 	if (gameDiv.current)
-		gameDiv.current!.addEventListener('mousemove', (event: MouseEvent) => {
+		gameDiv.current.addEventListener('mousemove', (event: MouseEvent) => {
 			let mouseX = event.clientX - gameDiv.current!.offsetLeft;
 			console.log(`CLIENTID: ${clientId}`);
-			let vecY = ID === 1 ? 780: 20;
+			let vecY = ID === 1 ? 20: 780;
 			if (clientId && render.options && render.options.width){
 				const paddleX = Math.min(Math.max(mouseX - paddleWidth / 2, paddleWidth / 2), render.options.width - paddleWidth / 2)
 				console.log(`UPDATE`);

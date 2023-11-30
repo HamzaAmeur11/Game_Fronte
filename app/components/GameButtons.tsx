@@ -35,7 +35,7 @@ const GameButtons = () => {
         // }
     })
  
-    console.log(`Client : ${socket.id} Connected`);
+    // console.log(`Client : ${socket.id} Connected`);
 
     socket.on("CREATE", res => {
         setGameId(res.gameId);
