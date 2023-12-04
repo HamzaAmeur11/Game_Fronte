@@ -1,9 +1,4 @@
-import { Socket } from "socket.io-client";
 
-interface FriendButtonsProps  {
-    socket: Socket;
-    clientId: string;
-  };
 
 const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
     const CreateNewGame = () =>{

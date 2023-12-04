@@ -17,9 +17,9 @@ function hello(){
 
 function GameBot(){
     const gameDiv = useRef<HTMLDivElement>();
+    
 
-    const initializeObjects = () => {
-        
+    useEffect(() => {
         //create the Engine
         engine = Engine.create({
             gravity: {x: 0, y: 0, scale: 0.001},
@@ -141,13 +141,6 @@ function GameBot(){
         return () =>{
              render.canvas.remove();
         }
-
-    };
-
-    
-
-    useEffect(() => {
-        initializeObjects();
     }, []);
 
     return (
