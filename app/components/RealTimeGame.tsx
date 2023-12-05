@@ -49,10 +49,10 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
         gravity: {
           x: gameDependency.engineOption.gravityX,
           y: gameDependency.engineOption.gravityY,
-          scale: gameDependency.engineOption.gravityScale,
+        //   scale: gameDependency.engineOption.gravityScale,
         },
-        positionIterations : gameDependency.engineOption.positionIterations,
-        velocityIterations : gameDependency.engineOption.velocityIterations,
+        // positionIterations : gameDependency.engineOption.positionIterations,
+        // velocityIterations : gameDependency.engineOption.velocityIterations,
       })
   
     let render = Render.create({
@@ -71,26 +71,9 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 	
 	socket.on("START", res => {
 		console.log("START");
-		console.log(res);
-		ID = res.ID;
-		ball = res.ball;
-		Pv1 = res.p1;
-		Pv2 = res.p2;
-		score1 = res.score1;
-		score2 = res.score2
-		console.log("START ID: " , ID);
-		console.log("p1 : ", res.p1);
-		console.log("p2 : ", res.p2);
-
 		ballBody = Bodies.circle(ball.x, ball.y, 10 );
-		player1 = Bodies.rectangle( Pv1.x , Pv1.y , paddleWidth , paddleHeight,{
-			isStatic: true,
-			chamfer: {radius: gameDependency.playersOption.chamferReduis},
-        })
-		player2 = Bodies.rectangle( Pv2.x , Pv2.y , paddleWidth , paddleHeight,{
-			isStatic: true,
-			chamfer: {radius: gameDependency.playersOption.chamferReduis},
-        })
+		player1 = Bodies.rectangle( res.p1.x , res.p1.y , paddleWidth , paddleHeight,{ isStatic: true, })
+		player2 = Bodies.rectangle( res.p2.x , res.p2.y , paddleWidth , paddleHeight,{ isStatic: true, })
 		setObjectsInitialized(true);
   });
   

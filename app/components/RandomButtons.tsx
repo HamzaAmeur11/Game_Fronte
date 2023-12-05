@@ -1,13 +1,23 @@
 import React, { useState } from "react";
+import Button from 'rsuite';
 import { Socket } from "socket.io-client";
 
-interface FriendButtonsProps  {
+interface RandomButtons  {
     socket: Socket;
     clientId: string;
 };
 
-const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
+const FriendButtons: React.FC<RandomButtons> = ({socket, clientId})=>{
 	const [showModal, setShowModal] = useState(false);
+    const [mode, setMod] = useState('');
+    const [map, setMap] = useState('');
+
+    const handleMod = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setMod(event.target.value);
+    };
+    const handleMap = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setMap(event.target.value);
+    };
 
 	const CreateNewGame = () =>{
         console.log(`Client id : |${clientId}|`);
@@ -29,7 +39,7 @@ const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
         type="button"
         onClick={() => setShowModal(true)}
       >
-      Play with Friend
+      Play with Random
       </button>
       {showModal ? (
         <>
@@ -37,7 +47,7 @@ const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
             <div className="">
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
-                  <h3 className="text-3xl font=semibold">Play With Friends</h3>
+                  <h3 className="text-3xl font=semibold">Play With Random</h3>
                   <button
                     className=""
                     onClick={() => setShowModal(false)}
@@ -48,9 +58,39 @@ const FriendButtons: React.FC<FriendButtonsProps> = ({socket, clientId})=>{
                   </button>
                 </div>
                 <div className="relative p-6 flex-auto">
-                    <button onClick={CreateNewGame} className="w-[200px] h-[50px] bg-black text-[white] cursor-pointer text-base m-2.5 px-5 py-2.5 rounded-[5px] border-[none] hover:bg-[#AF6915]">Create new game</button>
+
+                    {/* <button onClick={CreateNewGame} className="w-[200px] h-[50px] bg-black text-[white] cursor-pointer text-base m-2.5 px-5 py-2.5 rounded-[5px] border-[none] hover:bg-[#AF6915]">Create new game</button>
                     <button onClick={JoinToGame} className="w-[200px] h-[50px] bg-black text-[white] cursor-pointer text-base m-2.5 px-5 py-2.5 rounded-[5px] border-[none] hover:bg-[#AF6915]">Join game</button>
                     <input className="bg-black text-[white] cursor-pointer text-base m-2.5 px-5 py-2.5 rounded-[5px] border-[none]" id="GameId" type="text" placeholder="Enter game ID" />
+                    */}
+                        <div>
+                            <input type="radio" name="mapChoice" value="BEGINNER" checked={map === "BEGINNER" onChange={handleMap}}>BEGINNER</input>
+                            <input>INTEMIDIER</input>
+                            <input>ADVANCED</input>
+                            <select>
+                                <option value="BEGINNER">BEGINNER</option>
+                                <option value="INTEMIDIER">INTEMIDIER</option>
+                                <option value="ADVANCED">ADVANCED</option>
+                            </select>
+                        </div>
+                        <input
+                            type="radio"
+                            name="modsChoice"
+                            value="defi"
+                            checked={mode === 'defi'}
+                            onChange={handleMod}
+                            />
+                            <label>Defi</label>
+
+                            <input
+                            type="radio"
+                            name="modsChoice"
+                            value="time"
+                            checked={mode === 'time'}
+                            onChange={handleMod}
+                            />
+                            <label>Time</label>
+                    
                 </div>
                 <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                   <button
