@@ -1,28 +1,56 @@
 "use client"
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Engine, Render, Bodies, Composite, Runner, Body} from 'matter-js';
 import Matter from "matter-js";
+import 'tailwindcss/tailwind.css';
 
 let engine = Engine.create();
 let width = 600;
 let height = 800;
 let paddleWidth = 125;
 let paddleHeight = 20;
+const AdvancedObs            :Body[] = [Bodies.rectangle(width / 2, height / 2, width / 2, 10, { isStatic: true , label: "ADV"})]
+const IntemidierObs            :Body[] = [Bodies.rectangle(width / 2, height / 2, 400, 10, { isStatic: true , label: "INTE"})]
 
-
-function hello(){
-    
-}
 
 function GameBot(){
     const gameDiv = useRef<HTMLDivElement>();
-    
+    // const [dimensions, setDimensions] = useState({
+    //     width: window.innerWidth,
+    //     height: window.innerHeight
+    //    });
+    let mode = "ADV";
 
     useEffect(() => {
         //create the Engine
+        // if (gameDiv.current) {
+        //     setDimensions({
+        //         width: gameDiv.current.offsetWidth,
+        //         height: gameDiv.current.offsetHeight
+        //     });
+        //     console.log("WIDTH:", gameDiv.current.offsetWidth);
+        //     console.log("HEIGHT:", gameDiv.current.offsetHeight);
+            
+        // }
+        // const handleResize = () => {
+        //     if (gameDiv.current) {
+        //         setDimensions({
+        //             width: gameDiv.current.offsetWidth,
+        //             height: gameDiv.current.offsetHeight
+        //         });
+        //         console.log("RWIDTH:", gameDiv.current.offsetWidth);
+        //         console.log("RHEIGHT:", gameDiv.current.offsetHeight);
+        //     }
+        // };
+        // width = dimensions.width;
+        // height = dimensions.height;
+        // // if (width > height);
+        // // else if (width <= height);
+        // window.addEventListener('resize', handleResize);
+
         engine = Engine.create({
-            gravity: {x: 0, y: 0, scale: 0.001},
+            gravity: {x: 0, y: 0, scale: 0},
             positionIterations: 10,
             velocityIterations: 8,
         });
@@ -40,11 +68,23 @@ function GameBot(){
             }
         });;
         
-        var topground =  Bodies.rectangle(0, 0, 1200, 10, { isStatic: true });
-        var downground =  Bodies.rectangle(0, 800, 1200, 10, { isStatic: true });
-        var leftground =  Bodies.rectangle(0, 0, 10, 1600, { isStatic: true });
-        var rightground =  Bodies.rectangle(600, 0, 10, 1600, { isStatic: true });
-        
+        let wallOptions = {
+            isStatic: true,
+            render: {
+                fillStyle: '#FFF',
+                strokeStyle: '#000',
+                lineWidth: 1,
+            },
+          };
+        var topground =  Bodies.rectangle(0, 0, 1200   , 10, wallOptions);
+        var downground =  Bodies.rectangle(0, 800, 1200, 10, wallOptions);
+        var leftground =  Bodies.rectangle(0, 0, 10, 1600, wallOptions);
+        var rightground =  Bodies.rectangle(600, 0, 10, 1600, wallOptions);
+        let bounds = Composite.create()
+        Composite.add(bounds, [topground, leftground, downground, rightground])
+        if (mode === "ADV")
+            Composite.add(bounds, [...AdvancedObs])
+
         var ball = Bodies.circle(width / 2, height / 2, 10, { 
             restitution: 1,
             frictionAir: 0,
@@ -75,7 +115,7 @@ function GameBot(){
             }
         });
         
-        const maxVelocity = 10;
+        const maxVelocity = 20;
         let score1 = 0
         let score2 = 0
 
@@ -115,10 +155,12 @@ function GameBot(){
                             
                         }
                     }
+
                 });
             }); 
             
-            Composite.add(engine.world, [ball, player1, player2, topground, downground, leftground, rightground]);
+            Composite.add(engine.world, bounds);
+            Composite.add(engine.world, [ball, player1, player2]);
             // // run the renderer
             Render.run(render);
             Runner.run(Runner.create(), engine);
@@ -130,7 +172,9 @@ function GameBot(){
                 // let newPosition = { x: mouseX, y: player2.position.y };
                 if (render.options && render.options.width){
                     const paddleX = Math.min(Math.max(mouseX - paddleWidth / 2, paddleWidth / 2), render.options.width - paddleWidth / 2)
-                    console.log(`x : ${paddleX} && mouseX: ${mouseX} && y : ${player2.position.y}`);
+                    // console.log(`x : ${paddleX} && mouseX: ${mouseX} && y : ${player2.position.y}`);
+
+                    
                     Body.setPosition(player2, {x: paddleX, y:player2.position.y})
                 }
                 
@@ -139,12 +183,17 @@ function GameBot(){
                 Body.setPosition(player1,  {x: ball.position.x, y:player1.position.y})
             });
         return () =>{
-             render.canvas.remove();
+            // window.removeEventListener('resize', handleResize);
+            render.canvas.remove();
         }
     }, []);
 
     return (
-            <div ref={gameDiv}></div>
+        <div className="flex flex-wrap-col flex-row ">
+            <div><h1>SCORE PLAYER1</h1></div>
+            <div ref={gameDiv} className="w-full h-full"></div>
+            <div><h1>score player2</h1></div> 
+        </div>
     );
 }
 
