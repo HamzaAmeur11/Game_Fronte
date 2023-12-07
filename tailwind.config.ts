@@ -11,7 +11,7 @@ const config: Config = {
         'xLarge': '2170px',
         'Large' : '1500px',
         'xMedium': '1179px',
-        'medium': '570px'
+        'medium': '780px'
         
     },
     extend: {

@@ -1,8 +1,8 @@
 "use client"
 
 import Navbar from "../components/Navbar"
-import GameButtons from "../components/GameButtons"
-import RanderGame from "../components/GameBot";
+import GameButtons from "../components/GameComonents/GameButtons"
+import RanderGame from "../components/GameComonents/GameBot";
 
 export default function Game() {
   

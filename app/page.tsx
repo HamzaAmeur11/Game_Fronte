@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React from "react";
 import RootLayout from "./layout"; 
 import Navbar from "./components/Navbar";
 
@@ -9,9 +9,7 @@ export default function Home() {
     <div className="flex flex-col text-slate-100 min-h-screen w-full">
             <div className=""><Navbar pageName="Home"/></div>
             <div className="border h-[87%] m-2 ">
-              <div>
-                
-              </div>
+              <p>HOME</p>
             </div>
           </div>
   )

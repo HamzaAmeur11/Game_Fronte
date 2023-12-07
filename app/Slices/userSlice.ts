@@ -1,21 +1,43 @@
 import { createAsyncThunk ,createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store/store';
 import { log } from 'console'
+import axios from 'axios';
+import { userInfo } from 'os';
 
-export interface UserInfos {
+interface UserData {
   id: number;
   name: string;
-  userName: string;
+  username: string;
   rank: number;
   level: number;
   avatar: string;
 }
 
-export interface userState {
-  user_Data:UserInfos;
-  loading: boolean;
-  error: string | null;
+interface MatchHIst {
+  id: number;
+  playerAId:number;
+  playerBId:number;
+  playerAAvatar:string;
+  playerBAvatar:string;
+  playerAUsername:string;
+  playerBUsername:string;
+  playerBScore:number;
+  playerAScore:number;
 }
+
+interface Achievs {
+  title : string;
+  unlocked : boolean;
+  icon : string;
+}
+
+export interface UserInfos {
+  userData: UserData;
+  matches: MatchHIst[];
+  achievements: Achievs[];
+
+}
+
 
 // export const initialState: userState = {
 //   user_Data: {
@@ -50,20 +72,32 @@ export interface userState {
 //   error: null
 // }
 
-const initialState = {
-  entity: [],
-} as any;
+//const initialState = {
+//  entity: [],
+//} as any;
 
-export const fetchInfos = createAsyncThunk("user/fetch", async (thunkApi) => {
-  const response = await fetch("http://localhost:5000/Profile/98945", {
-    method: "GET"
-  });
 
-  
-  const data = await response.json();   
-  // console.log(data);
-  return (data);
-})
+const initialState:{entity:null | UserInfos ; loading: boolean; error: null | string } = {
+  entity: null,
+  loading: false,
+  error: null,
+};
+
+  export const fetchInfos = createAsyncThunk("user/fetch", async (thunkApi) => {
+  try {
+    const response = await axios.get('http://localhost:4000/Profile', {withCredentials: true });
+
+    if (response.status === 200) {
+      console.log('Data getted successfully:', response.data.userData.avatar);
+      return (response.data);
+      // console.log(response.data);
+    } else {
+      console.error('Data getting failed:', response.data);
+    }
+  } catch (error) {
+    console.error('Error getting data:', error);
+  }
+  })
 
 const userSlice = createSlice({
   name: 'user',
@@ -77,7 +111,7 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchInfos.fulfilled, (state, action) => {
-        state.user_Data = action.payload;
+        state.entity = action.payload;
         state.loading = false;
       })
       .addCase(fetchInfos.rejected, (state, action) => {

@@ -12,7 +12,7 @@ import Matter, {
   Vector,
   World,
 } from "matter-js";
-import { GameDependency } from "../game/game.dto";
+import { GameDependency } from "../../game/game.dto";
 
 interface RealTimeGameProps  {
   socket: Socket;

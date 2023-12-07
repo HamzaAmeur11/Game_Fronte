@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import GameBot from "./GameBot";
 import RealTimeGame from "./RealTimeGame"
-import { WebsocketContext } from '../Contexts/WebSocketContext';
+import { WebsocketContext } from '../../Contexts/WebSocketContext';
 import { Socket } from 'socket.io-client';
 import FriendButtons from './FriendButtons';
-import { GameDependency, GameDto } from '../game/game.dto';
-import { Button } from 'rsuite';
+import { GameDependency, GameDto } from '../../game/game.dto';
 import RandomButtons from './RandomButtons';
 // import FriendButtons from './Modal';
 // import { Modal , Button } from "rsuite";
@@ -57,20 +56,12 @@ const GameButtons = () => {
     
     };
 
-    const openFriendModal = () => {
-        console.log('Playing with Friend');
-        setShowFriendModal(true);
-    };
-
     const CreateNewGame = () =>{
         console.log(`Client id : |${clientId}|`);
         
         socket.emit("CREATE", { clientId: clientId,})
     }
     
-    const closeModal = () => {
-        setShowFriendModal(false);
-    };
     const JoinToGame = () =>{
         const GameId = document.getElementById("GameId") as HTMLInputElement;
         console.log(`GameId : ${GameId.value}`);
