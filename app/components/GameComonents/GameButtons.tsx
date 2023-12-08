@@ -14,7 +14,7 @@ import RandomButtons from './RandomButtons';
 
 
 const GameButtons = () => {
-    
+
     const socket = useContext(WebsocketContext);
     const [clientId, setClientId] = useState<string>('');
     const [gameId, setGameId] = useState<string>('');
@@ -30,11 +30,12 @@ const GameButtons = () => {
             // console.log(res);
             setClientId(res.clientId);
     })
-    
-    // socket.on("JOIN", res => {
-        
-        // })
-    
+
+     socket.on("ERROR", res => {
+        console.log("ERROR DZEB", res);
+
+    })
+
     socket.on("CREATE", res => {
         setGameId(res.gameId);
     })
@@ -53,19 +54,19 @@ const GameButtons = () => {
     const handlePlayWithRandomUser = () => {
         console.log('Playing with Random User');
         socket.emit("RANDOM", { clientId : socket.id, })
-    
+
     };
 
     const CreateNewGame = () =>{
         console.log(`Client id : |${clientId}|`);
-        
+
         socket.emit("CREATE", { clientId: clientId,})
     }
-    
+
     const JoinToGame = () =>{
         const GameId = document.getElementById("GameId") as HTMLInputElement;
         console.log(`GameId : ${GameId.value}`);
-        
+
         socket.emit("JOIN", { clientId: clientId, gameId: GameId.value })
     }
 
@@ -78,7 +79,7 @@ const GameButtons = () => {
 
     return (
     <div className='flex justify-center items-center h-screen flex-col mt-5'>
-        {!showBotGame && !showRandomGame && ( 
+        {!showBotGame && !showRandomGame && (
             <>
                 <button className='w-[200px] h-[50px] bg-black text-[white] cursor-pointer text-base m-2.5 px-5 py-2.5 rounded-[5px] border-[none] hover:bg-[#AF6915]' onClick={handlePlayWithBot}>Play with Bo9a</button>
                 {/* <button className='w-[200px] h-[50px] bg-black text-[white] cursor-pointer text-base m-2.5 px-5 py-2.5 rounded-[5px] border-[none] hover:bg-[#AF6915]' onClick={handlePlayWithRandomUser}>Play with Random</button> */}
@@ -89,7 +90,7 @@ const GameButtons = () => {
         {showBotGame && <GameBot/>}
         {(showRandomGame && gameDependency) && <RealTimeGame socket={socket} clientId={clientId} gameId={gameId} gameDependency={gameDependency}/>}
         {/*{(!showRandomGame) && (
-                
+
         )}*/}
     </div>
   );

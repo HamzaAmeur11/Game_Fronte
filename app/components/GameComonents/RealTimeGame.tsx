@@ -54,7 +54,7 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
         // positionIterations : gameDependency.engineOption.positionIterations,
         // velocityIterations : gameDependency.engineOption.velocityIterations,
       })
-  
+
     let render = Render.create({
         element: gameDiv.current || document.body,
         engine: engine,
@@ -68,7 +68,7 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
     let downground =  Bodies.rectangle(0, 800, 1200, 10, { isStatic: true });
     let leftground =  Bodies.rectangle(0, 0, 10, 1600, { isStatic: true });
     let rightground =  Bodies.rectangle(600, 0, 10, 1600, { isStatic: true });
-	
+
 	socket.on("START", res => {
 		console.log("START");
 		console.log("START");
@@ -87,12 +87,12 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 		player2 = Bodies.rectangle( Pv2.x , Pv2.y , paddleWidth , paddleHeight,{ isStatic: true,  chamfer: { radius: 10},})
 		setObjectsInitialized(true);
   });
-  
+
 	socket.on("UPDATE", res=>{
 		// console.log("UPDATE ID: " , ID);
 		// console.log("p1 : ", res.p1);
 		// console.log("p2 : ", res.p2);
-		
+
 		Body.setPosition(ballBody,res.ball)
 		Body.setPosition(ballBody,res.ball)
 		Body.setPosition(player1,res.p1)
@@ -105,12 +105,12 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 			console.log("YOU WIN");
 		else
 			console.log("YOU LOSE");
-		Render.stop(render);	
+		Render.stop(render);
 	})
-	
+
 	socket.on("GAMEOVER", res=>{
-		
-		Render.stop(render);	
+
+		Render.stop(render);
 		console.log("GAMEOVER");
 	})
 
@@ -135,7 +135,7 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 	useEffect(() => {
 		if (objectsInitialized){
 			console.log("hello");
-			
+
 			World.add(engine.world, [ballBody, player1, player2, topground, downground, leftground, rightground]);
 			Runner.run(Runner.create(), engine);
 			Render.run(render);
