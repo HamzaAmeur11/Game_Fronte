@@ -131,7 +131,7 @@ const RealTimeGame: React.FC<RealTimeGameProps> = ({ socket , clientId , gameId 
 			})
 		if (objectsInitialized){
 			console.log("hello");
-			
+
 			World.add(engine.world, [ballBody, player1, player2, topground, downground, leftground, rightground]);
 			Runner.run(Runner.create(), engine);
 			Render.run(render);
