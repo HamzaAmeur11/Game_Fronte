@@ -80,7 +80,7 @@ function GameBot(){
             x: 5,
             y: 5,
         })
-        
+
         var player1 = Bodies.rectangle(width / 2, 20, paddleWidth, paddleHeight, {
             isStatic: true,
             chamfer: { radius: 10},

@@ -22,7 +22,6 @@ const RandomButtons: React.FC<RandomButtons> = ({socket, clientId})=>{
 
     const Submit = ()=>{
 		socket.emit("RANDOM", {
-			clientId: clientId,
 			map: map,
 			mode: mode,			
 		})
